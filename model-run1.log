@@ -1,0 +1,82 @@
+Building train dataloader
+Built train dataloader
+
+Building evaluation dataloader
+Built evaluation dataloader
+
+Building Composer model
+Built Composer model
+
+Building optimizer and learning rate scheduler
+Built optimizer and learning rate scheduler
+
+Building Speed, LR, and Memory monitoring callbacks
+Built Speed, LR, and Memory monitoring callbacks
+
+Building algorithm recipes
+Built algorithm recipes
+
+Building Trainer
+Built Trainer
+
+Logging config
+run_name: asgn9-run1
+is_train: true
+seed: 17
+max_duration: 36ep
+device_train_microbatch_size: auto
+model:
+  name: resnet50
+  loss_name: binary_cross_entropy
+  num_classes: 1000
+train_dataset:
+  is_streaming: false
+  path: /datasets/Imagenet
+  local: /tmp/mds-cache/mds-imagenet1k/
+  resize_size: -1
+  crop_size: 176
+  batch_size: 1312
+eval_dataset:
+  is_streaming: false
+  path: /datasets/Imagenet
+  local: /tmp/mds-cache/mds-imagenet1k/
+  resize_size: 232
+  crop_size: 224
+  batch_size: 1312
+optimizer:
+  lr: 2.048
+  momentum: 0.875
+  weight_decay: 0.0005
+scheduler:
+  t_warmup: 8ep
+  alpha_f: 0.0
+loggers:
+  progress_bar:
+    progress_bar_refresh_rate: 1
+    log_interval: 1ba
+    batch_level_metrics: true
+recipe_name: mild
+mild:
+  model.loss_name: binary_cross_entropy
+  train_dataset.crop_size: 176
+  eval_dataset.resize_size: 232
+  max_duration: 36ep
+medium:
+  model.loss_name: binary_cross_entropy
+  train_dataset.crop_size: 176
+  eval_dataset.resize_size: 232
+  max_duration: 135ep
+hot:
+  model.loss_name: binary_cross_entropy
+  train_dataset.crop_size: 176
+  eval_dataset.resize_size: 232
+  max_duration: 270ep
+save_folder: ./{run_name}/ckpt
+save_interval: 1ep
+save_num_checkpoints_to_keep: 2
+load_path: null
+
+Run evaluation
+Train!
+Waiting up to 30 seconds for all training processes to terminate. Press Ctrl-C to exit immediately.
+Global rank 0 (PID 982) exited with code 1
