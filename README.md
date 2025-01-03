@@ -21,6 +21,7 @@ The objective of this code is to train the Imagenet1k dataset with Resnet50 mode
     - Used g4dn.2xlarge ec2 insrance for initial test run.
     - Used g4dn.2xlarge for 1st model run. It Ran for 3 days almost.
     - Used g6.12xlarge for 2nd Model run. It ran for 18 hours.
+    - As per [**benchmarking**](https://www.databricks.com/blog/mosaic-resnet), it can run `17 min - 80 min` in a P4 instance.
 
   - #### Data Preparation
 
