@@ -2,16 +2,27 @@
 
 The objective of this code is to train the Imagenet1k dataset with Resnet50 model architecture
 
+### Contents
+
+1. [Aws Setup](#aws-setup)
+2. [Data Preparation](#data-preparation)
+3. [EBS Volume](#ebs-volume)
+4. [Source Code Setup](#source-code-setup)
+5. [Docker Preparation](#docker-preparation)
+6. [Model Running](#model-running)
+7. [Model Accuracy](#model-accuracy)
+8. [Model Run Logs](#model-run-logs)
+
 - Here is the approach:
 
-  - **AWS Setup**
+  - #### AWS Setup
 
     - Used t3.medium ec2 insrance for data preparation and EBS volumen setup
     - Used g4dn.2xlarge ec2 insrance for initial test run.
-    - Used g4dn.2xlarge for 1st model run.
-    - Used g6.12xlarge for 2nd Model run.
+    - Used g4dn.2xlarge for 1st model run. It Ran for 3 days almost.
+    - Used g6.12xlarge for 2nd Model run. It ran for 18 hours.
 
-  - **Data Preparation**
+  - #### Data Preparation
 
     - I am using AWS. Connect to a EC2 instance, preferable t3.medium to download the dataset from kaggle
     - I have used kaggle cli to fetch the dataset.
@@ -23,7 +34,7 @@ The objective of this code is to train the Imagenet1k dataset with Resnet50 mode
       $ aws s3 cp  imagenet-object-localization-challenge.zip s3://my-bucket/
       ```
 
-  - **EBS volume**
+  - #### EBS volume
     - Create a new volume and attach to one of the ec2 instance.
     - My volume size was 250GB.
     - The val dataset is not proper in the original kaggle dataset. We need to download the val dataset with proper folder structure.
@@ -39,7 +50,7 @@ The objective of this code is to train the Imagenet1k dataset with Resnet50 mode
     $ sudo mkdir /mnt/volume
     $ sudo mount /dev/nvme2n1 /mnt/vol
     ```
-  - **Source Code setup**
+  - #### Source Code setup
 
     - Clone the repo
       ```
@@ -47,7 +58,7 @@ The objective of this code is to train the Imagenet1k dataset with Resnet50 mode
       ```
     - Also copy this code to EBS volume, so that it can be readily available.
 
-  - **Docker preparation**
+  - #### Docker preparation
 
     - Mosaic has release one docker for this benchmark code to run. I will use this.
     - Pull the docker from this tag on [mosain ml pytorch images]('https://hub.docker.com/r/mosaicml/pytorch')
@@ -72,14 +83,33 @@ The objective of this code is to train the Imagenet1k dataset with Resnet50 mode
     $ pip install -r requirements.txt
     ```
 
-  - **Model Running**
+  - #### Model Running
     - Change the resnet50.yaml as per required.
     - Change the recipe from "mild", "medium" or "hot".
     - Configure dataset path, batch size, number of epoch if you want to change, save folder path, load path etc.
     ```
     $ composer main.py yamls/resnet50.yaml
     ```
-  - **Docker Commands**
+  - #### Model Accuracy
+
+    - By default it was implemented `torchmetrics.classification MulticlassAccuracy`
+    - Modified this code to implement Top-1 Accuracy using `torchmetrics.classification Accuracy`
+
+      ```
+          train_metrics = Accuracy(
+          task='multiclass',
+          num_classes=num_classes,
+          top_k=1,
+          compute_on_step=True,
+          dist_sync_on_step=True
+          )
+      ```
+
+    - In the first run it achived `76.50%` Top-1 accuracy in 36 epochs
+    - In the second run it achived similar accuracy in less number of epochs.
+    - As per [**benchmarking**](https://www.databricks.com/blog/mosaic-resnet) released by Mosaic ML, it can achive `75.2% - 78.1%` in 36 epochs.
+
+  - #### Docker Commands
 
     ```
     $ docker images # show images
@@ -97,8 +127,8 @@ The objective of this code is to train the Imagenet1k dataset with Resnet50 mode
 
 I have ran the model 2 times. In the 1st attempt logs were not capltured clearly as I was using EC2 spot instances and it is getting interrputed. Second time modle Run log was fine. Both logs attached here.
 
-1. [Model Run Log - 1](#model-run-log---1)
-2. [Model Run Log - 2](#model-run-log---2)
+1. [**Model Run Log - 1**](#model-run-log---1)
+2. [**Model Run Log - 2**](#model-run-log---2)
 
 ### [Model Run Log - 1](#model-run-log---1)
 
