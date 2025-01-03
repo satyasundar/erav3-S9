@@ -1,5 +1,9 @@
 # Train Imagenet1k with Resnet50 on a mosaic-ml composer docker
 
+### [Huggingface Spaces](https://huggingface.co/spaces/satyanayak/imagenet1k-resnet50-demo)
+
+https://huggingface.co/spaces/satyanayak/imagenet1k-resnet50-demo
+
 The objective of this code is to train the Imagenet1k dataset with Resnet50 model architecture
 
 ### Contents
